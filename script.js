@@ -121,7 +121,7 @@ var sketchProc = function (processingInstance) {
             if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
                 this.color1 = 37;
                 this.color2 = 130;
-                if (mouseIsPressed) {
+                if (mousePressed) {
                     currentLevel = 1;
                     blueBall.x = levels[currentLevel].startX;
                     blueBall.y = levels[currentLevel].startY;
