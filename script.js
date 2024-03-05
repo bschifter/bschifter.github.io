@@ -39,10 +39,13 @@ var sketchProc = function (processingInstance) {
             this.color2 = config.color2;
             this.color3 = config.color3;
         };
-        var playButton = new Button({ buttonX: 127, buttonY: 177, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+        var playButton = new Button({ buttonX: 127, buttonY: 93, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
 
-        var controlButton = new Button({ buttonX: 127, buttonY: 237, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+        var controlButton = new Button({ buttonX: 127, buttonY: 147, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
 
+        var settingButton = new Button({ buttonX: 127, buttonY: 199, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+
+        var buttons = [playButton, controlButton, settingButton];
         //Platforms
         var Platform = function (config) {
             this.x = config.x;
@@ -96,11 +99,11 @@ var sketchProc = function (processingInstance) {
             if (currentLevel === 0) {
                 fill(0, 0, 0);
                 textSize(32);
-                text("The Escape", 109, 100, 400, 100);
+                text("The Escape", 109, 29, 400, 100);
                 fill(0, 0, 0);
-                text("Play", 156, 184, 100, 100);
+                text("Play", 156, 100, 100, 100);
                 textSize(20);
-                text("Made by 1145-901", 115, 345, 339, 100);
+                text("Made by 1145-901", 115, 364, 339, 100);
             }
             if (currentLevel === 1) {
 
@@ -110,26 +113,40 @@ var sketchProc = function (processingInstance) {
             }
 
         };
+
+        Level.drawImages = function () {
+            if (currentLevel === 0) {
+                fill(117, 88, 0);
+                rect(-1, 350, 401, 50);
+                fill(5, 255, 0);
+                rect(-1, 345, 401, 5);
+                image(getImage("cute/WallBlockTall"), -2, 201);
+                image(getImage("cute/GemOrange"), 24, 200, 50, 75);
+                image(getImage("avatars/robot_male_1"), 95, 271, 100, 100);
+                image(getImage("avatars/mr-pants"), 288, 263, 100, 100);
+            }
+        };
         Button.prototype.draw = function () {
             if (currentLevel === 0) {
                 fill(this.color1, this.color2, this.color3);
                 rect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
+                if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
+                    this.color1 = 37;
+                    this.color2 = 130;
+                }
+                else {
+                    this.color1 = 4;
+                    this.color2 = 255;
+                }
             }
+
         };
 
         Button.prototype.applyMouse = function () {
             if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
-                this.color1 = 37;
-                this.color2 = 130;
-                if (mouseIsPressed) {
-                    currentLevel = 1;
-                    blueBall.x = levels[currentLevel].startX;
-                    blueBall.y = levels[currentLevel].startY;
-                }
-            }
-            else {
-                playButton.color1 = 4;
-                playButton.color2 = 255;
+                currentLevel = 1;
+                blueBall.x = levels[currentLevel].startX;
+                blueBall.y = levels[currentLevel].startY;
             }
         };
 
@@ -244,7 +261,6 @@ var sketchProc = function (processingInstance) {
             }
             if (this.y > 400) {
                 fill(0, 0, 0);
-                text("You Died!", 100, 100, 100, 100);
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vy = 0;
@@ -309,8 +325,6 @@ var sketchProc = function (processingInstance) {
                 blueBall.applyIntersect(platforms[i]);
             }
 
-            playButton.applyMouse();
-            controlButton.applyMouse();
             blueBall.applyUserInput(platforms);
             blueBall.applyBorders();
             blueBall.applyGravity();
@@ -321,9 +335,11 @@ var sketchProc = function (processingInstance) {
                 platforms[i].applyMovement();
             }
 
-            background(189, 253, 255);
+            background(110, 115, 255);
             playButton.draw();
             controlButton.draw();
+            settingButton.draw();
+            Level.drawImages();
             Level.drawTextAndEnd();
             blueBall.draw();
             Level.applyChangeInLevels();
@@ -332,6 +348,11 @@ var sketchProc = function (processingInstance) {
             }
         };
 
+        mousePressed = function () {
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].applyMouse();
+            }
+        };
         keyPressed = function () {
             if (keys.includes(keyCode)) {
 
@@ -345,6 +366,19 @@ var sketchProc = function (processingInstance) {
             keys.splice(keys.indexOf(keyCode), 1);
 
         };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
