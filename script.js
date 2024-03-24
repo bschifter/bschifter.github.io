@@ -12,7 +12,8 @@ var sketchProc = function (processingInstance) {
 
         var bankImage = loadImage("bank.png");
         var robberImage = loadImage("robber.png");
-
+        //robber is being shown from top left point
+        //he is 48 tall, 
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -74,9 +75,13 @@ var sketchProc = function (processingInstance) {
             }
         };
 
-        var Platform1 = new Platform({ x: 100, y: 100, width: 100, height: 100 });
+        var Platform1 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
+        var Platform2 = new Platform({ x: -1, y: 275, width: 405, height: 10, canKill: false });
+        var Platform3 = new Platform({ x: -1, y: 200, width: 405, height: 10, canKill: false });
+        var Platform4 = new Platform({ x: -1, y: 125, width: 405, height: 10, canKill: false });
+        var Platform5 = new Platform({ x: -1, y: 50, width: 405, height: 10, canKill: false });
         var platforms0 = [];
-        var platforms1 = [Platform1];
+        var platforms1 = [Platform1, Platform2, Platform3, Platform4, Platform5];
         var platforms2 = [];
         var platforms3 = [];
 
@@ -195,7 +200,7 @@ var sketchProc = function (processingInstance) {
                 this.vx = 0;
             }
 
-            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 5 && this.x < platform.x + 1) {
+            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 50 && this.x < platform.x + 1) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -316,7 +321,8 @@ var sketchProc = function (processingInstance) {
         Ball.prototype.draw = function () {
             fill(0, 98, 255);
             if (currentLevel > 0) {
-                image(robberImage, this.x, this.y, 50, 50);
+                //image(robberImage, this.x, this.y, 50, 50);
+                ellipse(this.x, this.y, 10, 10);
             }
         };
 
