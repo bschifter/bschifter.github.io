@@ -1,3 +1,7 @@
+// @pjs preload must be used to preload the image
+
+/* @pjs preload="bank.png"; */
+
 var sketchProc = function (processingInstance) {
     with (processingInstance) {
         size(400, 400);
@@ -6,6 +10,8 @@ var sketchProc = function (processingInstance) {
 
         // END BOILER PLATE
 
+        var bankImage = loadImage("bank.png");
+        var robberImage = loadImage("robber.png");
 
         var Ball = function (config) {
             this.x = config.x;
@@ -120,10 +126,8 @@ var sketchProc = function (processingInstance) {
                 rect(-1, 350, 401, 50);
                 fill(5, 255, 0);
                 rect(-1, 345, 401, 5);
-                image(getImage("cute/WallBlockTall"), -2, 201);
-                image(getImage("cute/GemOrange"), 24, 200, 50, 75);
-                image(getImage("avatars/robot_male_1"), 95, 271, 100, 100);
-                image(getImage("avatars/mr-pants"), 288, 263, 100, 100);
+                image(bankImage, 40, 244, 100, 100);
+                image(robberImage, 200, 250, 90, 90);
             }
         };
         Button.prototype.draw = function () {
@@ -312,7 +316,7 @@ var sketchProc = function (processingInstance) {
         Ball.prototype.draw = function () {
             fill(0, 98, 255);
             if (currentLevel > 0) {
-                image(getImage("avatars/leafers-sapling"), this.x, this.y, 50, 50);
+                image(robberImage, this.x, this.y, 50, 50);
             }
         };
 
@@ -366,20 +370,6 @@ var sketchProc = function (processingInstance) {
             keys.splice(keys.indexOf(keyCode), 1);
 
         };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // START BOILER PLATE
