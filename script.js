@@ -10,10 +10,8 @@ var sketchProc = function (processingInstance) {
 
         // END BOILER PLATE
 
-        var bankImage = loadImage("bank.png");
-        var robberImage = loadImage("robber.png");
-        //robber is being shown from top left point
-        //he is 48 tall, 
+        //var bankImage = loadImage("bank.png");
+        //var robberImage = loadImage("robber.png");
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -27,8 +25,9 @@ var sketchProc = function (processingInstance) {
         };
 
         var keys = [];
-        var Level = function (platforms, startX, startY, endX, endY, endWidth, endHeight) {
+        var Level = function (platforms, ladders, startX, startY, endX, endY, endWidth, endHeight) {
             this.platforms = platforms;
+            this.ladders = ladders;
             this.startX = startX;
             this.startY = startY;
             this.endX = endX;
@@ -75,6 +74,26 @@ var sketchProc = function (processingInstance) {
             }
         };
 
+        var Ladder = function (config) {
+            this.x = config.x;
+            this.y = config.y;
+        };
+
+        Ladder.prototype.draw = function () {
+            stroke(128, 96, 74);
+            strokeWeight(5);
+            line(this.x, this.y, this.x, this.y + 65);
+            line(this.x + 30, this.y, this.x + 30, this.y + 65);
+            line(this.x, this.y + 60, this.x + 30, this.y + 60);
+            line(this.x, this.y + 50, this.x + 30, this.y + 50);
+            line(this.x, this.y + 40, this.x + 30, this.y + 40);
+            line(this.x, this.y + 30, this.x + 30, this.y + 30);
+            line(this.x, this.y + 20, this.x + 30, this.y + 20);
+            line(this.x, this.y + 10, this.x + 30, this.y + 10);
+            strokeWeight(1);
+            stroke(0, 0, 0);
+        };
+
         var Platform1 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
         var Platform2 = new Platform({ x: -1, y: 275, width: 405, height: 10, canKill: false });
         var Platform3 = new Platform({ x: -1, y: 200, width: 405, height: 10, canKill: false });
@@ -85,14 +104,31 @@ var sketchProc = function (processingInstance) {
         var platforms2 = [];
         var platforms3 = [];
 
+        var Ladder1 = new Ladder({ x: 80, y: 286 });
+        var Ladder2 = new Ladder({ x: 301, y: 211 });
+        var Ladder3 = new Ladder({ x: 176, y: 135 });
+        var Ladder4 = new Ladder({ x: 18, y: 60 });
+
+        var ladders1 = [Ladder1, Ladder2, Ladder3, Ladder4];
+
         var homeScreen = new Level(platforms0, 1, 1);
-        var level1 = new Level(platforms1, 10, 340, 323, 35, 37, 37);
+        var level1 = new Level(platforms1, ladders1, 10, 340, 323, 35, 37, 37);
         var level2 = new Level(platforms2, 10, 340, 33, 25, 10, 10);
         var level3 = new Level(platforms3, 10, 380, 10, 10, 10, 10);
         var levels = [homeScreen, level1, level2, level3];
         var currentLevel = 0;
 
         var blueBall = new Ball({ x: levels[currentLevel].startX, y: levels[currentLevel].startY });
+
+        Ladder.prototype.applyBall = function () {
+            if (keys.includes(UP) && blueBall.x > this.x && blueBall.x < this.x + 30 && blueBall.y > this.y - 15 && blueBall.y < this.y + 60) {
+                blueBall.y = this.y - 10;
+            }
+
+            if (keys.includes(DOWN) && blueBall.x > this.x && blueBall.x < this.x + 30 && blueBall.y > this.y - 50 && blueBall.y < this.y + 60) {
+                blueBall.y = this.y + 30;
+            }
+        };
 
         Level.applyChangeInLevels = function () {
             if (blueBall.x > levels[currentLevel].endX && blueBall.x < levels[currentLevel].endX + levels[currentLevel].endWidth && blueBall.y > levels[currentLevel].endY && blueBall.y < levels[currentLevel].endY + levels[currentLevel].endHeight) {
@@ -131,8 +167,8 @@ var sketchProc = function (processingInstance) {
                 rect(-1, 350, 401, 50);
                 fill(5, 255, 0);
                 rect(-1, 345, 401, 5);
-                image(bankImage, 40, 244, 100, 100);
-                image(robberImage, 200, 250, 90, 90);
+                //image(bankImage, 40, 244, 100, 100);
+                //image(robberImage, 200, 250, 90, 90);
             }
         };
         Button.prototype.draw = function () {
@@ -330,6 +366,7 @@ var sketchProc = function (processingInstance) {
 
             var level = levels[currentLevel];
             var platforms = level.platforms;
+            var ladders = level.ladders;
 
             for (var i = 0; i < platforms.length; i++) {
                 blueBall.applyIntersect(platforms[i]);
@@ -351,11 +388,17 @@ var sketchProc = function (processingInstance) {
             settingButton.draw();
             Level.drawImages();
             Level.drawTextAndEnd();
-            blueBall.draw();
             Level.applyChangeInLevels();
             for (var i = 0; i < platforms.length; i++) {
                 platforms[i].draw();
             }
+            for (var i = 0; i < ladders.length; i++) {
+                ladders[i].draw();
+            }
+            for (var i = 0; i < ladders.length; i++) {
+                ladders[i].applyBall();
+            }
+            blueBall.draw();
         };
 
         mousePressed = function () {
