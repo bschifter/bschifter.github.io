@@ -12,9 +12,19 @@ var sketchProc = function (processingInstance) {
 
         //var bankImage = loadImage("bank.png");
         //var robberImage = loadImage("robber.png");
-        var img = loadImage("robot_male_1.svg")
-        var robber = loadImage("robber2.png")
-        //var Song = loadSound("scifi.mp3")
+        var img = loadImage("robot_male_1.svg");
+        var robber = loadImage("robber2.png");
+        var song = new Audio("scifi.mp3");
+        song.loop = true;
+
+        //var img = getImage("avatars/robot_male_1");
+        var flippedimage = function (img, x, y, width, height) {
+            pushMatrix();
+            scale(-1.0, 1.0);
+            image(img, -x, y, width, height);
+            popMatrix();
+        };
+
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -26,6 +36,8 @@ var sketchProc = function (processingInstance) {
             this.ay = 0;
             this.gravity = 0.2;
             this.onLadder = false;
+            this.width = 10;
+            this.height = 10;
         };
 
         var keys = [];
@@ -136,18 +148,10 @@ var sketchProc = function (processingInstance) {
             this.canMove = config.canMove;
             this.moveLeft = false;
         };
-        //var img = getImage("avatars/robot_male_1");
-        var flippedimage = function (img, x, y, width, height) {
-            pushMatrix();
-            scale(-1.0, 1.0);
-            image(img, -x, y, width, height);
-            popMatrix();
-        };
-
         Enemy.prototype.draw = function () {
             if (this.moveLeft === false) {
                 imageMode(CENTER);
-                image(img, this.x, this.y, 50, 50);
+                image(img, this.x, this.y, this.width, this.height);
                 imageMode(CORNER);
             }
         };
@@ -262,10 +266,10 @@ var sketchProc = function (processingInstance) {
         var enemies2 = [Enemy21, Enemy22, Enemy23];
         var enemies3 = [Enemy31, Enemy32, Enemy33, Enemy34];
 
-        var homeScreen = new Level(platforms0, ladders0, moneys0, enemies0, 1, 1);
+        var homeScreen = new Level(platforms0, ladders0, moneys0, enemies0);
         var Controls = new Level(platforms0, ladders0, moneys0, enemies0);
         var Levels = new Level(platforms0, ladders0, moneys0, enemies0);
-        var level1 = new Level(platforms1, ladders1, moneys1, enemies1, 386, 348, 61, 7, 31, 43);
+        var level1 = new Level(platforms1, ladders1, moneys1, enemies1, 386, 350, 61, 7, 31, 43);
         var level2Check = new Level(platforms0, ladders0, moneys0, enemies0);
         var level2 = new Level(platforms2, ladders2, moneys2, enemies2, 9, 197, 334, 157, 31, 43);
         var level3Check = new Level(platforms0, ladders0, moneys0, enemies0);
@@ -431,6 +435,7 @@ var sketchProc = function (processingInstance) {
             if (mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
                 if (currentLevel === 0) {
                     if (this.isPlayButton === true) {
+                        song.play();
                         currentLevel = 1;
                         blueBall.x = levels[currentLevel].startX;
                         blueBall.y = levels[currentLevel].startY;
@@ -491,12 +496,12 @@ var sketchProc = function (processingInstance) {
         Ball.prototype.applyIntersect = function (platform) {
             var level = levels[currentLevel];
             var moneys = level.moneys;
-            if (platform.canKill === false && this.y > platform.y - 5 && this.y < platform.y + 1 && this.x > platform.x && this.x < platform.x + platform.width) {
-                this.y = platform.y - 5;
+            if (platform.canKill === false && this.y > platform.y - this.height * 1 / 2 && this.y < platform.y + 1 && this.x > platform.x && this.x < platform.x + platform.width) {
+                this.y = platform.y - this.height * 1 / 2;
                 this.vy = 0;
             }
 
-            if (platform.canKill === true && this.y > platform.y - 5 && this.y < platform.y + 1 && this.x > platform.x && this.x < platform.x + platform.width) {
+            if (platform.canKill === true && this.y > platform.y - this.height * 1 / 2 && this.y < platform.y + 1 && this.x > platform.x && this.x < platform.x + platform.width) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -505,14 +510,13 @@ var sketchProc = function (processingInstance) {
                 for (var i = 0; i < moneys.length; i++) {
                     moneys[i].drawn = true;
                 }
-                println("1");
             }
-            if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 5 && this.x < platform.x + 1) {
-                this.x = platform.x - 5;
+            if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - this.width * 1 / 2 && this.x < platform.x + 1) {
+                this.x = platform.x - this.width * 1 / 2;
                 this.vx = 0;
             }
 
-            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 5 && this.x < platform.x + 1) {
+            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - this.width * 1 / 2 && this.x < platform.x + 1) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -521,15 +525,14 @@ var sketchProc = function (processingInstance) {
                 for (var i = 0; i < moneys.length; i++) {
                     moneys[i].drawn = true;
                 }
-                println("2");
             }
 
-            if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x < platform.x + platform.width + 5 && this.x > platform.x + platform.width - 1) {
-                this.x = platform.x + platform.width + 5;
+            if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x < platform.x + platform.width + this.width * 1 / 2 && this.x > platform.x + platform.width - 1) {
+                this.x = platform.x + platform.width + this.width * 1 / 2;
                 this.vx = 0;
             }
 
-            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x < platform.x + platform.width + 5 && this.x > platform.x + platform.width - 1) {
+            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x < platform.x + platform.width + this.width * 1 / 2 && this.x > platform.x + platform.width - 1) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -538,15 +541,14 @@ var sketchProc = function (processingInstance) {
                 for (var i = 0; i < moneys.length; i++) {
                     moneys[i].drawn = true;
                 }
-                println("3");
             }
 
-            if (platform.canKill === false && this.x > platform.x && this.x < platform.x + platform.width && this.y < platform.y + platform.height + 5 && this.y > platform.y + platform.height - 1) {
-                this.y = platform.y + platform.height + 5;
+            if (platform.canKill === false && this.x > platform.x && this.x < platform.x + platform.width && this.y < platform.y + platform.height + this.height * 1 / 2 && this.y > platform.y + platform.height - 1) {
+                this.y = platform.y + platform.height + this.height * 1 / 2;
                 this.vy = 0;
             }
 
-            if (platform.canKill === true && this.x > platform.x && this.x < platform.x + platform.width && this.y < platform.y + platform.height + 5 && this.y > platform.y + platform.height - 1) {
+            if (platform.canKill === true && this.x > platform.x && this.x < platform.x + platform.width && this.y < platform.y + platform.height + this.height * 1 / 2 && this.y > platform.y + platform.height - 1) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -555,11 +557,10 @@ var sketchProc = function (processingInstance) {
                 for (var i = 0; i < moneys.length; i++) {
                     moneys[i].drawn = true;
                 }
-                println("4");
             }
         };
         Ball.prototype.applyIntersect2 = function (money) {
-            if (money.drawn === true && this.y + 5 > money.y - 5 && this.y - 5 < money.y + 5 && this.x + 5 > money.x - money.radius && this.x - 5 < money.x + money.radius) {
+            if (money.drawn === true && this.y + this.height * 1 / 2 > money.y - 5 && this.y - this.height * 1 / 2 < money.y + 5 && this.x + this.width * 1 / 2 > money.x - money.radius && this.x - this.width * 1 / 2 < money.x + money.radius) {
                 Win++;
                 money.drawn = false;
             }
@@ -567,7 +568,7 @@ var sketchProc = function (processingInstance) {
         Ball.prototype.applyIntersect3 = function (enemy) {
             var level = levels[currentLevel];
             var moneys = level.moneys;
-            if (this.y + 5 > enemy.y - enemy.height * 1 / 2 && this.y - 5 < enemy.y + enemy.height * 1 / 2 && this.x + 5 > enemy.x - enemy.width * 1 / 2 && this.x - 5 < enemy.x + enemy.width * 1 / 2) {
+            if (this.y + this.height * 1 / 2 > enemy.y - enemy.height * 1 / 2 && this.y - this.height * 1 / 2 < enemy.y + enemy.height * 1 / 2 && this.x + this.width * 1 / 2 > enemy.x - enemy.width * 1 / 2 && this.x - this.width * 1 / 2 < enemy.x + enemy.width * 1 / 2) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
@@ -592,7 +593,7 @@ var sketchProc = function (processingInstance) {
             }
             var onPlatform = false;
             for (var i = 0; i < platforms.length; i++) {
-                if (this.y === platforms[i].y - 5 && this.x > platforms[i].x && this.x < platforms[i].x + platforms[i].width) {
+                if (this.y === platforms[i].y - this.height * 1 / 2 && this.x > platforms[i].x && this.x < platforms[i].x + platforms[i].width) {
                     onPlatform = true;
                 }
             }
@@ -615,12 +616,12 @@ var sketchProc = function (processingInstance) {
             }
         };
         Ball.prototype.applyBorders = function () {
-            if (this.x < 5) {
-                this.x = 5;
+            if (this.x < this.width * 1 / 2) {
+                this.x = this.width * 1 / 2;
                 this.vx = 0;
             }
-            if (this.x > 395) {
-                this.x = 395;
+            if (this.x > 400 - this.width * 1 / 2) {
+                this.x = 400 - this.width * 1 / 2;
                 this.vx = 0;
             }
             if (this.y > 400) {
@@ -675,13 +676,21 @@ var sketchProc = function (processingInstance) {
                 }
             }
         };
+
         Ball.prototype.draw = function () {
             fill(0, 98, 255);
-            if (currentLevel > 0) {
-                image(robber, this.x, this.y, 50, 50);
-                ellipse(this.x, this.y, 10, 10);
-            }
+            /*if (currentLevel > 0) {
+                imageMode(CENTER);
+                image(robber, this.x, this.y, 200, 50);
+                imageMode(CORNER);*/
+            ellipse(this.x, this.y, 10, 10);
+            //}
         };
+        /*Ball.prototype.flip = function () {
+            imageMode(CENTER);
+            flippedimage(robber, this.x, this.y, 200, 50);
+            imageMode(CORNER);
+        };*/
 
         draw = function () {
 
@@ -753,7 +762,12 @@ var sketchProc = function (processingInstance) {
             for (var i = 0; i < enemies.length; i++) {
                 enemies[i].flip();
             }
+            //if (keys.includes(LEFT)) {
             blueBall.draw();
+            /*}
+            else {
+            blueBall.flip();
+            }*/
         };
 
         mousePressed = function () {
