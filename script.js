@@ -12,8 +12,7 @@ var sketchProc = function (processingInstance) {
 
         //var bankImage = loadImage("bank.png");
         //var robberImage = loadImage("robber.png");
-        //var bankImage = loadImage("bank.png");
-        //var robberImage = loadImage("robber.png");
+        var img = loadImage("robot_male_1.svg")
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -24,14 +23,16 @@ var sketchProc = function (processingInstance) {
             this.ax = 0;
             this.ay = 0;
             this.gravity = 0.2;
+            this.onLadder = false;
         };
 
         var keys = [];
         var Win = 0;
-        var Level = function (platforms, ladders, moneys, startX, startY, endX, endY, endWidth, endHeight) {
+        var Level = function (platforms, ladders, moneys, enemies, startX, startY, endX, endY, endWidth, endHeight) {
             this.platforms = platforms;
             this.ladders = ladders;
             this.moneys = moneys;
+            this.enemies = enemies;
             this.startX = startX;
             this.startY = startY;
             this.endX = endX;
@@ -86,14 +87,16 @@ var sketchProc = function (processingInstance) {
         Ladder.prototype.draw = function () {
             stroke(128, 96, 74);
             strokeWeight(5);
-            line(this.x, this.y, this.x, this.y + 65);
-            line(this.x + 30, this.y, this.x + 30, this.y + 65);
+            line(this.x, this.y - 11, this.x, this.y + 65);
+            line(this.x + 30, this.y - 11, this.x + 30, this.y + 65);
             line(this.x, this.y + 60, this.x + 30, this.y + 60);
             line(this.x, this.y + 50, this.x + 30, this.y + 50);
             line(this.x, this.y + 40, this.x + 30, this.y + 40);
             line(this.x, this.y + 30, this.x + 30, this.y + 30);
             line(this.x, this.y + 20, this.x + 30, this.y + 20);
             line(this.x, this.y + 10, this.x + 30, this.y + 10);
+            line(this.x, this.y, this.x + 30, this.y);
+            line(this.x, this.y - 10, this.x + 30, this.y - 10);
             strokeWeight(1);
             stroke(0, 0, 0);
         };
@@ -109,91 +112,188 @@ var sketchProc = function (processingInstance) {
             if (this.drawn === true) {
                 fill(234, 255, 0);
                 ellipse(this.x, this.y, 20, 20);
+                fill(0, 0, 0);
+                text("$", this.x - 4, this.y - 4, 100, 100);
+            }
+        };
+
+        var Enemy = function (config) {
+            this.x = config.x;
+            this.y = config.y;
+            this.width = config.width;
+            this.height = config.height;
+            this.canMove = config.canMove;
+            this.moveLeft = false;
+        };
+
+        var flippedimage = function (img, x, y, width, height) {
+            pushMatrix();
+            scale(-1.0, 1.0);
+            image(img, -x, y, width, height);
+            popMatrix();
+        };
+
+        Enemy.prototype.draw = function () {
+            if (this.moveLeft === false) {
+                imageMode(CENTER);
+                image(img, this.x, this.y, 50, 50);
+                imageMode(CORNER);
+            }
+        };
+        Enemy.prototype.flip = function () {
+            if (this.moveLeft === true) {
+                imageMode(CENTER);
+                flippedimage(img, this.x, this.y, this.width, this.height);
+                imageMode(CORNER);
             }
         };
 
         var Platform1 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
-        var Platform2 = new Platform({ x: -1, y: 275, width: 405, height: 10, canKill: false });
-        var Platform3 = new Platform({ x: -1, y: 200, width: 405, height: 10, canKill: false });
-        var Platform4 = new Platform({ x: -1, y: 125, width: 405, height: 10, canKill: false });
-        var Platform5 = new Platform({ x: -1, y: 50, width: 405, height: 10, canKill: false });
+        var Platform2 = new Platform({ x: -1, y: 275, width: 80, height: 10, canKill: false });
+        var Platform3 = new Platform({ x: 111, y: 275, width: 292, height: 10, canKill: false });
+        var Platform4 = new Platform({ x: -1, y: 200, width: 301, height: 10, canKill: false });
+        var Platform5 = new Platform({ x: 333, y: 200, width: 80, height: 10, canKill: false });
+        var Platform6 = new Platform({ x: -1, y: 125, width: 177, height: 10, canKill: false });
+        var Platform7 = new Platform({ x: 208, y: 125, width: 201, height: 10, canKill: false });
+        var Platform8 = new Platform({ x: -1, y: 50, width: 18, height: 10, canKill: false });
+        var Platform9 = new Platform({ x: 50, y: 50, width: 302, height: 10, canKill: false });
+        var Platform10 = new Platform({ x: 383, y: 50, width: 24, height: 10, canKill: false });
+        var Platform11 = new Platform({ x: 258, y: 50, width: 10, height: -63, canKill: false });
+
+        var Platform21 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
+        var Platform22 = new Platform({ x: -1, y: 275, width: 300, height: 10, canKill: false });
+        var Platform23 = new Platform({ x: 333, y: 275, width: 74, height: 10, canKill: false });
+        var Platform24 = new Platform({ x: -1, y: 200, width: 232, height: 10, canKill: false });
+        var Platform25 = new Platform({ x: 264, y: 200, width: 149, height: 10, canKill: false });
+        var Platform26 = new Platform({ x: -1, y: 125, width: 169, height: 10, canKill: false });
+        var Platform27 = new Platform({ x: 200, y: 125, width: 205, height: 10, canKill: false });
+        var Platform28 = new Platform({ x: -1, y: 50, width: 14, height: 10, canKill: false });
+        var Platform29 = new Platform({ x: 47, y: 50, width: 310, height: 10, canKill: false });
+        var Platform210 = new Platform({ x: 390, y: 50, width: 14, height: 10, canKill: false });
+
         var platforms0 = [];
-        var platforms1 = [Platform1, Platform2, Platform3, Platform4, Platform5];
-        var platforms2 = [];
+        var platforms1 = [Platform1, Platform2, Platform3, Platform4, Platform5, Platform6, Platform7, Platform8, Platform9, Platform10, Platform11];
+        var platforms2 = [Platform21, Platform22, Platform23, Platform24, Platform25, Platform26, Platform27, Platform28, Platform29, Platform210];
         var platforms3 = [];
 
         var Ladder1 = new Ladder({ x: 80, y: 286 });
         var Ladder2 = new Ladder({ x: 301, y: 211 });
-        var Ladder3 = new Ladder({ x: 176, y: 135 });
-        var Ladder4 = new Ladder({ x: 18, y: 60 });
+        var Ladder3 = new Ladder({ x: 176, y: 136 });
+        var Ladder4 = new Ladder({ x: 18, y: 61 });
+        var Ladder5 = new Ladder({ x: 352, y: 61 });
 
-        var ladders1 = [Ladder1, Ladder2, Ladder3, Ladder4];
+        var Ladder21 = new Ladder({ x: 169, y: 136 });
+        var Ladder22 = new Ladder({ x: 15, y: 61 });
+        var Ladder23 = new Ladder({ x: 359, y: 61 });
+        var Ladder24 = new Ladder({ x: 232, y: 211 });
+        var Ladder25 = new Ladder({ x: 301, y: 286 });
+
+        var ladders0 = [];
+        var ladders1 = [Ladder1, Ladder2, Ladder3, Ladder4, Ladder5];
+        var ladders2 = [Ladder21, Ladder22, Ladder23, Ladder24, Ladder25];
+        var ladders3 = [];
 
         var Money1 = new Money({ x: 188, y: 244 });
-        var Money2 = new Money({ x: 385, y: 171 });
-        var Money3 = new Money({ x: 271, y: 24 });
+        var Money2 = new Money({ x: 20, y: 171 });
+        var Money3 = new Money({ x: 309, y: 24 });
 
+        var Money21 = new Money({ x: 27, y: 314 });
+        var Money22 = new Money({ x: 200, y: 20 });
+        var Money23 = new Money({ x: 95, y: 247 });
+
+        var moneys0 = [];
         var moneys1 = [Money1, Money2, Money3];
+        var moneys2 = [Money21, Money22, Money23];
+        var moneys3 = [];
 
-        var homeScreen = new Level(platforms0, 1, 1);
-        var level1 = new Level(platforms1, ladders1, moneys1, 10, 340, 323, 35, 37, 37);
-        var level2 = new Level(platforms2, 10, 340, 33, 25, 10, 10);
-        var level3 = new Level(platforms3, 10, 380, 10, 10, 10, 10);
+        var Enemy1 = new Enemy({ x: 60, y: 178, width: 50, height: 50, canMove: true });
+        var Enemy2 = new Enemy({ x: 260, y: 102, width: 50, height: 50, canMove: true });
+
+        var Enemy21 = new Enemy({ x: 260, y: 28, width: 50, height: 50, canMove: true });
+        var Enemy22 = new Enemy({ x: 68, y: 102, width: 50, height: 50, canMove: true });
+        var Enemy23 = new Enemy({ x: 357, y: 252, width: 50, height: 50, canMove: true });
+
+        var enemies0 = [];
+        var enemies1 = [Enemy1, Enemy2];
+        var enemies2 = [Enemy21, Enemy22, Enemy23];
+        var enemies3 = [];
+
+        var homeScreen = new Level(platforms0, ladders0, moneys0, enemies0, 1, 1);
+        var level1 = new Level(platforms1, ladders1, moneys1, enemies1, 386, 348, 61, 7, 31, 43);
+        var level2 = new Level(platforms2, ladders2, moneys2, enemies2, 9, 197, 334, 157, 31, 43);
+        var level3 = new Level(platforms3, ladders3, moneys3, enemies3, 9, 23, 10, 10, 10, 10);
         var levels = [homeScreen, level1, level2, level3];
-        var currentLevel = 1;
+        var currentLevel = 0;
 
         var blueBall = new Ball({ x: levels[currentLevel].startX, y: levels[currentLevel].startY });
 
-        Ladder.prototype.applyBall = function () {
-            if (keys.includes(UP) && blueBall.x > this.x && blueBall.x < this.x + 30 && blueBall.y > this.y - 15 && blueBall.y < this.y + 60) {
-                blueBall.y = this.y - 10;
-                keys.splice(keys.indexOf(UP), 1);
-
+        Enemy.prototype.move = function () {
+            if (this.canMove === true && this.moveLeft === false) {
+                this.x++;
+                if (this.x > 380) {
+                    this.moveLeft = true;
+                }
             }
-
-            if (keys.includes(DOWN) && blueBall.x > this.x && blueBall.x < this.x + 30 && blueBall.y > this.y - 50 && blueBall.y < this.y + 60) {
-                blueBall.y = this.y + 60;
+            if (this.canMove === true && this.moveLeft === true) {
+                this.x--;
+                if (this.x < 20) {
+                    this.moveLeft = false;
+                }
             }
+        };
+        Ladder.prototype.checkBall = function () {
+            if (blueBall.x > this.x && blueBall.x < this.x + 30 && blueBall.y > this.y - 16 && blueBall.y < this.y + 60) {
+                return true;
+            }
+            return false;
         };
 
         Level.applyChangeInLevels = function () {
-            /*if (blueBall.x > levels[currentLevel].endX && blueBall.x < levels[currentLevel].endX + levels[currentLevel].endWidth && blueBall.y > levels[currentLevel].endY && blueBall.y < levels[currentLevel].endY + levels[currentLevel].endHeight) {
-                currentLevel++;
-                blueBall.x = levels[currentLevel].startX;
-                blueBall.y = levels[currentLevel].startY;
-        
-                blueBall.vx = 0;
-                blueBall.vy = 0;
-            }*/
-            if (Win >= 3) {
+            if (Win >= 3 && keys.includes(UP) && blueBall.x > levels[currentLevel].endX && blueBall.x < levels[currentLevel].endX + levels[currentLevel].endWidth && blueBall.y > levels[currentLevel].endY && blueBall.y < levels[currentLevel].endY + levels[currentLevel].endHeight) {
                 currentLevel++;
                 blueBall.x = levels[currentLevel].startX;
                 blueBall.y = levels[currentLevel].startY;
 
                 blueBall.vx = 0;
                 blueBall.vy = 0;
+
+                Win = 0;
             }
         };
         Level.drawTextAndEnd = function () {
-            fill(234, 255, 0);
-            ellipse(354, 14, 20, 20);
-            fill(0, 0, 0);
-            textSize(20);
-            text(Win + "/3", 367, 6, 100, 100);
+            fill(128, 96, 74);
+            rect(levels[currentLevel].endX, levels[currentLevel].endY, levels[currentLevel].endWidth, levels[currentLevel].endHeight);
             if (currentLevel === 0) {
                 fill(0, 0, 0);
                 textSize(32);
-                text("The Theft", 109, 29, 400, 100);
+                text("The Escape", 109, 29, 400, 100);
                 fill(0, 0, 0);
                 text("Play", 156, 100, 100, 100);
                 textSize(20);
                 text("Made by 1145-901", 115, 364, 339, 100);
             }
             if (currentLevel === 1) {
-
+                fill(234, 255, 0);
+                ellipse(77, 20, 20, 20);
+                fill(0, 0, 0);
+                text("$", 73, 16, 100, 100);
+                fill(0, 0, 0);
+                textSize(14);
+                text(Win + "/3", 66, 33, 100, 100);
+                textSize(12);
+                text("Use Arrow Keys to Move", 294, 296, 100, 100);
+                text("Remember to collect all money you see!", 84, 218, 100, 100);
+                text("Watch out for guards!", 268, 147, 132, 100);
+                text("Press Up to go to the next level", 101, 15, 113, 100);
             }
             if (currentLevel === 2) {
-
+                fill(234, 255, 0);
+                ellipse(350, 172, 20, 20);
+                fill(0, 0, 0);
+                text("$", 345, 167, 100, 100);
+                fill(0, 0, 0);
+                textSize(14);
+                text(Win + "/3", 340, 185, 100, 100);
             }
 
         };
@@ -222,7 +322,6 @@ var sketchProc = function (processingInstance) {
                 }
             }
         };
-
         Button.prototype.applyMouse = function () {
             if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
                 currentLevel = 1;
@@ -304,28 +403,29 @@ var sketchProc = function (processingInstance) {
             }
         };
         Ball.prototype.applyIntersect2 = function (money) {
-            if (money.drawn === true && this.y - 5 > money.y - 5 && this.y < money.y + 5 && this.x - 5 > money.x - money.radius && this.x < money.x + money.radius) {
+            if (money.drawn === true && this.y + 5 > money.y - 5 && this.y - 5 < money.y + 5 && this.x + 5 > money.x - money.radius && this.x - 5 < money.x + money.radius) {
                 Win++;
                 money.drawn = false;
             }
-
-            /*if (this.y > money.y && this.y < money.y + money.height && this.x > money.x - 5 && this.x < money.x + 1) {
-                println("y");
+        };
+        Ball.prototype.applyIntersect3 = function (enemy) {
+            var level = levels[currentLevel];
+            var moneys = level.moneys;
+            if (this.y + 5 > enemy.y - enemy.height * 1 / 2 && this.y - 5 < enemy.y + enemy.height * 1 / 2 && this.x + 5 > enemy.x - enemy.width * 1 / 2 && this.x - 5 < enemy.x + enemy.width * 1 / 2) {
+                this.x = levels[currentLevel].startX;
+                this.y = levels[currentLevel].startY;
+                this.vx = 0;
+                this.vy = 0;
+                Win = 0;
+                for (var i = 0; i < moneys.length; i++) {
+                    moneys[i].drawn = true;
+                }
             }
-        
-            if (this.y > money.y && this.y < money.y + money.height && this.x < money.x + money.width + 5 && this.x > money.x + money.width - 1) {
-                println("y");
-            }
-        
-            if (this.x > money.x && this.x < money.x + money.width && this.y < money.y + money.height + 5 && this.y > money.y + money.height - 1) {
-                println("y");
-            }*/
         };
         //Movement
         Ball.prototype.applyUserInput = function (platforms) {
 
             if (keys.includes(RIGHT)) {
-
                 this.ax = this.acceleration;
             }
             else if (keys.includes(LEFT)) {
@@ -334,18 +434,28 @@ var sketchProc = function (processingInstance) {
             else {
                 this.ax = 0;
             }
-            var intersect = false;
+            var onPlatform = false;
             for (var i = 0; i < platforms.length; i++) {
-                if (keys.includes(UP) && this.y === platforms[i].y - 5 && this.x > platforms[i].x && this.x < platforms[i].x + platforms[i].width) {
-                    intersect = true;
-
+                if (this.y === platforms[i].y - 5 && this.x > platforms[i].x && this.x < platforms[i].x + platforms[i].width) {
+                    onPlatform = true;
                 }
-                if (intersect === true) {
+            }
+            if (this.onLadder === true) {
+                this.vy = 0;
+                if (keys.includes(UP)) {
+                    this.vy = -2;
+                }
+                if (keys.includes(DOWN)) {
+                    this.vy = 2;
+                }
+            }
+            if (onPlatform === true) {
+                if (keys.includes(UP)) {
                     this.ay = -6;
                 }
-                else {
-                    this.ay = 0;
-                }
+            }
+            else {
+                this.ay = 0;
             }
         };
         Ball.prototype.applyBorders = function () {
@@ -367,7 +477,9 @@ var sketchProc = function (processingInstance) {
         };
         //Applying Velocity and Drag
         Ball.prototype.applyGravity = function () {
-            this.vy += this.gravity;
+            if (this.onLadder === false) {
+                this.vy += this.gravity;
+            }
         };
         Ball.prototype.applyVelocity = function () {
             this.x += this.vx;
@@ -421,12 +533,24 @@ var sketchProc = function (processingInstance) {
             var platforms = level.platforms;
             var ladders = level.ladders;
             var moneys = level.moneys;
+            var enemies = level.enemies;
+            var onLadder = false;
+
+            for (var i = 0; i < ladders.length; i++) {
+                if (ladders[i].checkBall()) {
+                    onLadder = true;
+                }
+            }
+            blueBall.onLadder = onLadder;
 
             for (var i = 0; i < platforms.length; i++) {
                 blueBall.applyIntersect(platforms[i]);
             }
             for (var i = 0; i < moneys.length; i++) {
                 blueBall.applyIntersect2(moneys[i]);
+            }
+            for (var i = 0; i < enemies.length; i++) {
+                blueBall.applyIntersect3(enemies[i]);
             }
 
             blueBall.applyUserInput(platforms);
@@ -437,6 +561,9 @@ var sketchProc = function (processingInstance) {
             blueBall.applyVelocity();
             for (var i = 0; i < platforms.length; i++) {
                 platforms[i].applyMovement();
+            }
+            for (var i = 0; i < enemies.length; i++) {
+                enemies[i].move();
             }
 
             background(110, 115, 255);
@@ -452,11 +579,14 @@ var sketchProc = function (processingInstance) {
             for (var i = 0; i < ladders.length; i++) {
                 ladders[i].draw();
             }
-            for (var i = 0; i < ladders.length; i++) {
-                ladders[i].applyBall();
-            }
             for (var i = 0; i < moneys.length; i++) {
                 moneys[i].draw();
+            }
+            for (var i = 0; i < enemies.length; i++) {
+                enemies[i].draw();
+            }
+            for (var i = 0; i < enemies.length; i++) {
+                enemies[i].flip();
             }
             blueBall.draw();
         };
