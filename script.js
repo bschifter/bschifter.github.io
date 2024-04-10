@@ -14,7 +14,7 @@ var sketchProc = function (processingInstance) {
         //var robberImage = loadImage("robber.png");
         var img = loadImage("robot_male_1.svg")
         var robber = loadImage("robber2.png")
-        var Song = loadSound("scifi.mp3")
+        //var Song = loadSound("scifi.mp3")
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -136,7 +136,7 @@ var sketchProc = function (processingInstance) {
             this.canMove = config.canMove;
             this.moveLeft = false;
         };
-        var img = getImage("avatars/robot_male_1");
+        //var img = getImage("avatars/robot_male_1");
         var flippedimage = function (img, x, y, width, height) {
             pushMatrix();
             scale(-1.0, 1.0);
@@ -273,7 +273,7 @@ var sketchProc = function (processingInstance) {
         var level4Check = new Level(platforms0, ladders0, moneys0, enemies0);
         var level4 = new Level(platforms3, ladders3, moneys3, enemies3, 9, 23, 10, 10, 10, 10);
         var levels = [homeScreen, level1, level2Check, level2, level3Check, level3, level4, Controls, Levels];
-        var currentLevel = 5;
+        var currentLevel = 0;
 
         var blueBall = new Ball({ x: levels[currentLevel].startX, y: levels[currentLevel].startY });
 
@@ -723,7 +723,7 @@ var sketchProc = function (processingInstance) {
             }
 
             background(110, 115, 255);
-            Song.play();
+            //Song.play();
             if (currentLevel === 0) {
                 playButton.draw();
                 controlButton.draw();
