@@ -13,6 +13,8 @@ var sketchProc = function (processingInstance) {
         //var bankImage = loadImage("bank.png");
         //var robberImage = loadImage("robber.png");
         var img = loadImage("robot_male_1.svg")
+        var robber = loadImage("robber2.png")
+        var Song = loadSound("scifi.mp3")
         var Ball = function (config) {
             this.x = config.x;
             this.y = config.y;
@@ -49,14 +51,23 @@ var sketchProc = function (processingInstance) {
             this.color1 = config.color1;
             this.color2 = config.color2;
             this.color3 = config.color3;
+            this.isPlayButton = config.isPlayButton || false;
+            this.isControlButton = config.isControlButton || false;
+            this.isLevelButton = config.isLevelButton || false;
+            this.isBackButton = config.isBackButton || false;
+            this.isConfirmationButton = config.isConfirmationButton || false;
         };
-        var playButton = new Button({ buttonX: 127, buttonY: 93, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+        var playButton = new Button({ buttonX: 127, buttonY: 93, buttonWidth: 130, buttonHeight: 40, color1: 4, color2: 255, color3: 0, isPlayButton: true });
 
-        var controlButton = new Button({ buttonX: 127, buttonY: 147, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+        var controlButton = new Button({ buttonX: 127, buttonY: 147, buttonWidth: 130, buttonHeight: 40, color1: 4, color2: 255, color3: 0, isControlButton: true });
 
-        var settingButton = new Button({ buttonX: 127, buttonY: 199, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0 });
+        var levelButton = new Button({ buttonX: 127, buttonY: 199, buttonWidth: 130, buttonHeight: 40, color1: 4, color2: 255, color3: 0, isLevelButton: true });
 
-        var buttons = [playButton, controlButton, settingButton];
+        var backButton = new Button({ buttonX: 5, buttonY: 355, buttonWidth: 90, buttonHeight: 40, color1: 4, color2: 255, color3: 0, isBackButton: true });
+
+        var confirmationButton = new Button({ buttonX: 127, buttonY: 198, buttonWidth: 120, buttonHeight: 40, color1: 4, color2: 255, color3: 0, isConfirmationButton: true });
+
+        var buttons = [playButton, controlButton, levelButton, backButton, confirmationButton];
         //Platforms
         var Platform = function (config) {
             this.x = config.x;
@@ -125,7 +136,7 @@ var sketchProc = function (processingInstance) {
             this.canMove = config.canMove;
             this.moveLeft = false;
         };
-
+        var img = getImage("avatars/robot_male_1");
         var flippedimage = function (img, x, y, width, height) {
             pushMatrix();
             scale(-1.0, 1.0);
@@ -158,23 +169,39 @@ var sketchProc = function (processingInstance) {
         var Platform8 = new Platform({ x: -1, y: 50, width: 18, height: 10, canKill: false });
         var Platform9 = new Platform({ x: 50, y: 50, width: 302, height: 10, canKill: false });
         var Platform10 = new Platform({ x: 383, y: 50, width: 24, height: 10, canKill: false });
-        var Platform11 = new Platform({ x: 258, y: 50, width: 10, height: -63, canKill: false });
+        var Platform11 = new Platform({ x: 258, y: -36, width: 10, height: 86, canKill: false });
 
         var Platform21 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
-        var Platform22 = new Platform({ x: -1, y: 275, width: 300, height: 10, canKill: false });
-        var Platform23 = new Platform({ x: 333, y: 275, width: 74, height: 10, canKill: false });
-        var Platform24 = new Platform({ x: -1, y: 200, width: 232, height: 10, canKill: false });
-        var Platform25 = new Platform({ x: 264, y: 200, width: 149, height: 10, canKill: false });
-        var Platform26 = new Platform({ x: -1, y: 125, width: 169, height: 10, canKill: false });
-        var Platform27 = new Platform({ x: 200, y: 125, width: 205, height: 10, canKill: false });
-        var Platform28 = new Platform({ x: -1, y: 50, width: 14, height: 10, canKill: false });
-        var Platform29 = new Platform({ x: 47, y: 50, width: 310, height: 10, canKill: false });
-        var Platform210 = new Platform({ x: 390, y: 50, width: 14, height: 10, canKill: false });
+        var Platform22 = new Platform({ x: -1, y: 275, width: 13, height: 10, canKill: false });
+        var Platform23 = new Platform({ x: 45, y: 275, width: 256, height: 10, canKill: false });
+        var Platform24 = new Platform({ x: 333, y: 275, width: 74, height: 10, canKill: false });
+        var Platform25 = new Platform({ x: -1, y: 200, width: 232, height: 10, canKill: false });
+        var Platform26 = new Platform({ x: 264, y: 200, width: 149, height: 10, canKill: false });
+        var Platform27 = new Platform({ x: -1, y: 125, width: 169, height: 10, canKill: false });
+        var Platform28 = new Platform({ x: 200, y: 125, width: 205, height: 10, canKill: false });
+        var Platform29 = new Platform({ x: -1, y: 50, width: 14, height: 10, canKill: false });
+        var Platform210 = new Platform({ x: 47, y: 50, width: 310, height: 10, canKill: false });
+        var Platform211 = new Platform({ x: 390, y: 50, width: 14, height: 10, canKill: false });
+        var Platform212 = new Platform({ x: 65, y: 210, width: 10, height: 65, canKill: true });
+
+        var Platform31 = new Platform({ x: -1, y: 350, width: 405, height: 50, canKill: false });
+        var Platform32 = new Platform({ x: -1, y: 275, width: 121, height: 10, canKill: false });
+        var Platform33 = new Platform({ x: 153, y: 275, width: 201, height: 10, canKill: false });
+        var Platform34 = new Platform({ x: 386, y: 275, width: 18, height: 10, canKill: false });
+        var Platform35 = new Platform({ x: -1, y: 200, width: 224, height: 10, canKill: false });
+        var Platform36 = new Platform({ x: 255, y: 200, width: 45, height: 10, canKill: false });
+        var Platform37 = new Platform({ x: 333, y: 200, width: 91, height: 10, canKill: false });
+        var Platform38 = new Platform({ x: -1, y: 125, width: 60, height: 10, canKill: false });
+        var Platform39 = new Platform({ x: 92, y: 125, width: 312, height: 10, canKill: false });
+        var Platform310 = new Platform({ x: -1, y: 50, width: 217, height: 10, canKill: false });
+        var Platform311 = new Platform({ x: 247, y: 50, width: 165, height: 10, canKill: false });
+        var Platform312 = new Platform({ x: 268, y: 210, width: 10, height: 65, canKill: true });
+        var Platform313 = new Platform({ x: 268, y: 135, width: 10, height: 65, canKill: true });
 
         var platforms0 = [];
         var platforms1 = [Platform1, Platform2, Platform3, Platform4, Platform5, Platform6, Platform7, Platform8, Platform9, Platform10, Platform11];
-        var platforms2 = [Platform21, Platform22, Platform23, Platform24, Platform25, Platform26, Platform27, Platform28, Platform29, Platform210];
-        var platforms3 = [];
+        var platforms2 = [Platform21, Platform22, Platform23, Platform24, Platform25, Platform26, Platform27, Platform28, Platform29, Platform210, Platform211, Platform212];
+        var platforms3 = [Platform31, Platform32, Platform33, Platform34, Platform35, Platform36, Platform37, Platform38, Platform39, Platform310, Platform311, Platform312, Platform313];
 
         var Ladder1 = new Ladder({ x: 80, y: 286 });
         var Ladder2 = new Ladder({ x: 301, y: 211 });
@@ -187,24 +214,36 @@ var sketchProc = function (processingInstance) {
         var Ladder23 = new Ladder({ x: 359, y: 61 });
         var Ladder24 = new Ladder({ x: 232, y: 211 });
         var Ladder25 = new Ladder({ x: 301, y: 286 });
+        var Ladder26 = new Ladder({ x: 13, y: 286 });
+
+        var Ladder31 = new Ladder({ x: 122, y: 286 });
+        var Ladder32 = new Ladder({ x: 301, y: 211 });
+        var Ladder33 = new Ladder({ x: 355, y: 286 });
+        var Ladder34 = new Ladder({ x: 223, y: 211 });
+        var Ladder35 = new Ladder({ x: 60, y: 136 });
+        var Ladder36 = new Ladder({ x: 216, y: 61 });
 
         var ladders0 = [];
         var ladders1 = [Ladder1, Ladder2, Ladder3, Ladder4, Ladder5];
-        var ladders2 = [Ladder21, Ladder22, Ladder23, Ladder24, Ladder25];
-        var ladders3 = [];
+        var ladders2 = [Ladder21, Ladder22, Ladder23, Ladder24, Ladder25, Ladder26];
+        var ladders3 = [Ladder31, Ladder32, Ladder33, Ladder34, Ladder35, Ladder36];
 
         var Money1 = new Money({ x: 188, y: 244 });
         var Money2 = new Money({ x: 20, y: 171 });
         var Money3 = new Money({ x: 309, y: 24 });
 
-        var Money21 = new Money({ x: 27, y: 314 });
+        var Money21 = new Money({ x: 27, y: 247 });
         var Money22 = new Money({ x: 200, y: 20 });
         var Money23 = new Money({ x: 95, y: 247 });
+
+        var Money31 = new Money({ x: 24, y: 244 });
+        var Money32 = new Money({ x: 363, y: 172 });
+        var Money33 = new Money({ x: 74, y: 26 });
 
         var moneys0 = [];
         var moneys1 = [Money1, Money2, Money3];
         var moneys2 = [Money21, Money22, Money23];
-        var moneys3 = [];
+        var moneys3 = [Money31, Money32, Money33];
 
         var Enemy1 = new Enemy({ x: 60, y: 178, width: 50, height: 50, canMove: true });
         var Enemy2 = new Enemy({ x: 260, y: 102, width: 50, height: 50, canMove: true });
@@ -213,17 +252,28 @@ var sketchProc = function (processingInstance) {
         var Enemy22 = new Enemy({ x: 68, y: 102, width: 50, height: 50, canMove: true });
         var Enemy23 = new Enemy({ x: 357, y: 252, width: 50, height: 50, canMove: true });
 
+        var Enemy31 = new Enemy({ x: 77, y: 252, width: 50, height: 50, canMove: true });
+        var Enemy32 = new Enemy({ x: 348, y: 176, width: 50, height: 50, canMove: true });
+        var Enemy33 = new Enemy({ x: 175, y: 103, width: 50, height: 50, canMove: true });
+        var Enemy34 = new Enemy({ x: 20, y: 27, width: 50, height: 50, canMove: true });
+
         var enemies0 = [];
         var enemies1 = [Enemy1, Enemy2];
         var enemies2 = [Enemy21, Enemy22, Enemy23];
-        var enemies3 = [];
+        var enemies3 = [Enemy31, Enemy32, Enemy33, Enemy34];
 
         var homeScreen = new Level(platforms0, ladders0, moneys0, enemies0, 1, 1);
+        var Controls = new Level(platforms0, ladders0, moneys0, enemies0);
+        var Levels = new Level(platforms0, ladders0, moneys0, enemies0);
         var level1 = new Level(platforms1, ladders1, moneys1, enemies1, 386, 348, 61, 7, 31, 43);
+        var level2Check = new Level(platforms0, ladders0, moneys0, enemies0);
         var level2 = new Level(platforms2, ladders2, moneys2, enemies2, 9, 197, 334, 157, 31, 43);
-        var level3 = new Level(platforms3, ladders3, moneys3, enemies3, 9, 23, 10, 10, 10, 10);
-        var levels = [homeScreen, level1, level2, level3];
-        var currentLevel = 0;
+        var level3Check = new Level(platforms0, ladders0, moneys0, enemies0);
+        var level3 = new Level(platforms3, ladders3, moneys3, enemies3, 9, 345, 30, 308, 31, 43);
+        var level4Check = new Level(platforms0, ladders0, moneys0, enemies0);
+        var level4 = new Level(platforms3, ladders3, moneys3, enemies3, 9, 23, 10, 10, 10, 10);
+        var levels = [homeScreen, level1, level2Check, level2, level3Check, level3, level4, Controls, Levels];
+        var currentLevel = 5;
 
         var blueBall = new Ball({ x: levels[currentLevel].startX, y: levels[currentLevel].startY });
 
@@ -268,18 +318,24 @@ var sketchProc = function (processingInstance) {
                 textSize(32);
                 text("The Escape", 109, 29, 400, 100);
                 fill(0, 0, 0);
-                text("Play", 156, 100, 100, 100);
+                text("Play", 162, 101, 100, 100);
+                text("Controls", 131, 157, 138, 100);
+                text("Levels", 146, 208, 100, 100);
                 textSize(20);
                 text("Made by 1145-901", 115, 364, 339, 100);
             }
             if (currentLevel === 1) {
-                fill(234, 255, 0);
+                /*fill(234, 255, 0);
                 ellipse(77, 20, 20, 20);
                 fill(0, 0, 0);
-                text("$", 73, 16, 100, 100);
+                text("$", 73, 16, 100, 100);*/
+                fill(255, 255, 255);
+                rect(62, 8, 29, 17);
+                fill(255, 0, 0);
+                text("EXIT", 63, 13, 100, 100);
                 fill(0, 0, 0);
                 textSize(14);
-                text(Win + "/3", 66, 33, 100, 100);
+                text(Win + "/3", 66, 31, 100, 100);
                 textSize(12);
                 text("Use Arrow Keys to Move", 294, 296, 100, 100);
                 text("Remember to collect all money you see!", 84, 218, 100, 100);
@@ -287,13 +343,58 @@ var sketchProc = function (processingInstance) {
                 text("Press Up to go to the next level", 101, 15, 113, 100);
             }
             if (currentLevel === 2) {
-                fill(234, 255, 0);
+                fill(0, 0, 0);
+                textSize(32);
+                text("Go to Level 2?", 94, 31, 229, 100);
+                text("Level 2", 136, 206, 134, 100);
+            }
+            if (currentLevel === 3) {
+                /*fill(234, 255, 0);
                 ellipse(350, 172, 20, 20);
                 fill(0, 0, 0);
-                text("$", 345, 167, 100, 100);
+                text("$", 345, 167, 100, 100);*/
+                fill(255, 255, 255);
+                rect(335, 160, 29, 17);
+                fill(255, 0, 0);
+                text("EXIT", 335, 164, 100, 100);
                 fill(0, 0, 0);
                 textSize(14);
                 text(Win + "/3", 340, 185, 100, 100);
+                textSize(12);
+                text("These lasers kill you!", 78, 215, 128, 100);
+            }
+            if (currentLevel === 4) {
+                fill(0, 0, 0);
+                textSize(32);
+                text("Go to Level 3?", 86, 23, 229, 100);
+                text("Level 3", 136, 206, 110, 100);
+            }
+            if (currentLevel === 5) {
+                /*fill(234, 255, 0);
+                ellipse(46, 322, 20, 20);
+                fill(0, 0, 0);
+                text("$", 42, 317, 100, 100);*/
+                fill(255, 255, 255);
+                rect(31, 311, 29, 17);
+                fill(255, 0, 0);
+                text("EXIT", 32, 315, 100, 100);
+                fill(0, 0, 0);
+                textSize(14);
+                text(Win + "/3", 35, 336, 100, 100);
+            }
+            if (currentLevel === 7) {
+                fill(0, 0, 0);
+                textSize(32);
+                text("Controls", 137, 23, 114, 100);
+                textSize(20);
+                text("Up Arrow - Used to jump, go up on ladders, and go in doors.", 40, 80, 339, 171);
+                text("Left Arrow - Used to go left.", 40, 169, 289, 100);
+                text("Right Arrow - Used to go right.", 40, 240, 329, 171);
+            }
+            if (currentLevel === 8) {
+                fill(0, 0, 0);
+                textSize(32);
+                text("Levels", 147, 23, 100, 100);
             }
 
         };
@@ -309,24 +410,58 @@ var sketchProc = function (processingInstance) {
             }
         };
         Button.prototype.draw = function () {
-            if (currentLevel === 0) {
-                fill(this.color1, this.color2, this.color3);
-                rect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
-                if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
-                    this.color1 = 37;
-                    this.color2 = 130;
-                }
-                else {
-                    this.color1 = 4;
-                    this.color2 = 255;
-                }
+            fill(this.color1, this.color2, this.color3);
+            rect(this.buttonX, this.buttonY, this.buttonWidth, this.buttonHeight);
+            fill(0, 0, 0);
+            textSize(32);
+            text("Back", 13, 362, 100, 100);
+            textSize(12);
+            if (mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
+                this.color1 = 37;
+                this.color2 = 130;
+            }
+            else {
+                this.color1 = 4;
+                this.color2 = 255;
             }
         };
         Button.prototype.applyMouse = function () {
-            if (currentLevel === 0 && mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
-                currentLevel = 1;
-                blueBall.x = levels[currentLevel].startX;
-                blueBall.y = levels[currentLevel].startY;
+            var level = levels[currentLevel];
+            var moneys = level.moneys;
+            if (mouseX > this.buttonX && mouseX < this.buttonX + this.buttonWidth && mouseY > this.buttonY && mouseY < this.buttonY + this.buttonHeight) {
+                if (currentLevel === 0) {
+                    if (this.isPlayButton === true) {
+                        currentLevel = 1;
+                        blueBall.x = levels[currentLevel].startX;
+                        blueBall.y = levels[currentLevel].startY;
+                    }
+                    if (this.isControlButton === true) {
+                        currentLevel = 7;
+                        blueBall.x = levels[currentLevel].startX;
+                        blueBall.y = levels[currentLevel].startY;
+                    }
+                    if (this.isLevelButton === true) {
+                        currentLevel = 8;
+                        blueBall.x = levels[currentLevel].startX;
+                        blueBall.y = levels[currentLevel].startY;
+                    }
+                }
+                if (currentLevel > 0) {
+                    if (this.isBackButton === true) {
+                        currentLevel = 0;
+                        Win = 0;
+                        for (var i = 0; i < moneys.length; i++) {
+                            moneys[i].drawn = true;
+                        }
+                    }
+                }
+                if (currentLevel === 2 || currentLevel === 4) {
+                    if (this.isConfirmationButton === true) {
+                        currentLevel++;
+                        blueBall.x = levels[currentLevel].startX;
+                        blueBall.y = levels[currentLevel].startY;
+                    }
+                }
             }
         };
 
@@ -354,6 +489,8 @@ var sketchProc = function (processingInstance) {
 
         };
         Ball.prototype.applyIntersect = function (platform) {
+            var level = levels[currentLevel];
+            var moneys = level.moneys;
             if (platform.canKill === false && this.y > platform.y - 5 && this.y < platform.y + 1 && this.x > platform.x && this.x < platform.x + platform.width) {
                 this.y = platform.y - 5;
                 this.vy = 0;
@@ -364,18 +501,27 @@ var sketchProc = function (processingInstance) {
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
                 this.vy = 0;
-
+                Win = 0;
+                for (var i = 0; i < moneys.length; i++) {
+                    moneys[i].drawn = true;
+                }
+                println("1");
             }
             if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 5 && this.x < platform.x + 1) {
                 this.x = platform.x - 5;
                 this.vx = 0;
             }
 
-            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 50 && this.x < platform.x + 1) {
+            if (platform.canKill === true && this.y > platform.y && this.y < platform.y + platform.height && this.x > platform.x - 5 && this.x < platform.x + 1) {
                 this.x = levels[currentLevel].startX;
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
                 this.vy = 0;
+                Win = 0;
+                for (var i = 0; i < moneys.length; i++) {
+                    moneys[i].drawn = true;
+                }
+                println("2");
             }
 
             if (platform.canKill === false && this.y > platform.y && this.y < platform.y + platform.height && this.x < platform.x + platform.width + 5 && this.x > platform.x + platform.width - 1) {
@@ -388,6 +534,11 @@ var sketchProc = function (processingInstance) {
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
                 this.vy = 0;
+                Win = 0;
+                for (var i = 0; i < moneys.length; i++) {
+                    moneys[i].drawn = true;
+                }
+                println("3");
             }
 
             if (platform.canKill === false && this.x > platform.x && this.x < platform.x + platform.width && this.y < platform.y + platform.height + 5 && this.y > platform.y + platform.height - 1) {
@@ -400,6 +551,11 @@ var sketchProc = function (processingInstance) {
                 this.y = levels[currentLevel].startY;
                 this.vx = 0;
                 this.vy = 0;
+                Win = 0;
+                for (var i = 0; i < moneys.length; i++) {
+                    moneys[i].drawn = true;
+                }
+                println("4");
             }
         };
         Ball.prototype.applyIntersect2 = function (money) {
@@ -522,7 +678,7 @@ var sketchProc = function (processingInstance) {
         Ball.prototype.draw = function () {
             fill(0, 98, 255);
             if (currentLevel > 0) {
-                //image(robberImage, this.x, this.y, 50, 50);
+                image(robber, this.x, this.y, 50, 50);
                 ellipse(this.x, this.y, 10, 10);
             }
         };
@@ -567,14 +723,23 @@ var sketchProc = function (processingInstance) {
             }
 
             background(110, 115, 255);
-            playButton.draw();
-            controlButton.draw();
-            settingButton.draw();
+            Song.play();
+            if (currentLevel === 0) {
+                playButton.draw();
+                controlButton.draw();
+                levelButton.draw();
+            }
+            if (currentLevel === 2 || currentLevel === 4) {
+                confirmationButton.draw();
+            }
             Level.drawImages();
             Level.drawTextAndEnd();
             Level.applyChangeInLevels();
             for (var i = 0; i < platforms.length; i++) {
                 platforms[i].draw();
+            }
+            if (currentLevel > 0) {
+                backButton.draw();
             }
             for (var i = 0; i < ladders.length; i++) {
                 ladders[i].draw();
